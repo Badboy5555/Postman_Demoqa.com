@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+    stages {
+        stage('Git checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '339eb301-c989-4aef-8f91-8cfa413809a5', url: 'git@github.com:Badboy5555/Postman_Demoqa.com.git']])
+            }
+        }
+        stage('Testrun') {
+            steps {
+                sh 'newman run Demoqa.postman_collection.json -e Demoqa.postman_environment.json -r allure --reporter-allure-export allure-results'
+            }
+        }
+    }
+    post('Publish allure report') {
+        always {
+            script { allure includeProperties: false, jdk: '', reportBuildPolicy: 'ALWAYS', results: [[path: 'C:/ProgramData/Jenkins/.jenkins/workspace/demoqa_pipeline/allure-results']] }
+            //script { ws('C:/ProgramData/Jenkins/.jenkins/workspace/demoqa_pipeline/') { allure([ includeProperties: false, jdk: '', properties: [], reportBuildPolicy: 'ALWAYS', results: [[path: 'allure-results']] ]) } }
+        }
+    }
+}
