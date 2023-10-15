@@ -1,0 +1,500 @@
+{
+	"info": {
+		"_postman_id": "f9df26f0-47c2-48aa-9b31-bf3f24396c19",
+		"name": "Demoqa",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21209626",
+		"_collection_link": "https://www.postman.com/badboy5555/workspace/pub/collection/21209626-f9df26f0-47c2-48aa-9b31-bf3f24396c19?action=share&creator=21209626&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"item": [
+				{
+					"name": "Correct",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();\r",
+									"var req_params = JSON.parse(pm.request.body.raw)\r",
+									"var name = req_params.userName;\r",
+									"var password = req_params.password;\r",
+									"\r",
+									"pm.test('Status code is 201', () => {\r",
+									"    pm.expect(pm.response.code).to.eq(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('User ' + name + 'is created', () => {\r",
+									"    pm.expect(data).to.haveOwnProperty('username').to.eq(name)\r",
+									"});\r",
+									"\r",
+									"pm.test('Schema is valid', () => {\r",
+									"    const schema = {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"userID\": { \r",
+									"                \"type\": \"string\",\r",
+									"                \"pattern\": \"[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{12}\" },\r",
+									"            \"username\": { \"type\": \"string\" },\r",
+									"            \"books\": \"Array\"\r",
+									"        },\r",
+									"        \"required\": [\"userID\", \"username\", \"books\"],\r",
+									"        \"additionalProperties\": false\r",
+									"    };\r",
+									"    \r",
+									"    // Variant for multiple errors\r",
+									"    //let res = tv4.validateMultiple(data, schema);\r",
+									"    // if (res == false){\r",
+									"    //console.log('Some problem is here: ' + res);\r",
+									"    //}\r",
+									"\r",
+									"    // Variant for single step errors\r",
+									"    let res = tv4.validate(data, schema);\r",
+									"    if (res == false){\r",
+									"        console.log('Some problem is here: ' + tv4.error.schemaPath);\r",
+									"    }\r",
+									"\r",
+									"    pm.expect(res).to.be.true;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"Jack{{$randomInt}}\",\r\n  \"password\": \"_-12QXw!\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urls_main}}/Account/v1/User",
+							"host": [
+								"{{urls_main}}"
+							],
+							"path": [
+								"Account",
+								"v1",
+								"User"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Wrong password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();\r",
+									"\r",
+									"pm.test('Status code is 400', () => {\r",
+									"    pm.expect(pm.response.code).to.eq(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('Schema is valid', () => {\r",
+									"    const schema = {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"code\": { \"type\": \"number\" },\r",
+									"            \"message\": { \"type\": \"string\" }\r",
+									"        },\r",
+									"        \"required\": [\"code\", \"message\"],\r",
+									"        \"additionalProperties\": false\r",
+									"    };\r",
+									"\r",
+									"    // Variant for multiple errors\r",
+									"    //let res = tv4.validateMultiple(data, schema);\r",
+									"    // if (res == false){\r",
+									"    //console.log('Some problem is here: ' + res);\r",
+									"    //}\r",
+									"\r",
+									"    // Variant for single step errors\r",
+									"    let res = tv4.validate(data, schema);\r",
+									"    if (res == false){\r",
+									"        console.log('Some JSON schema problem is here: ' + tv4.error.schemaPath);\r",
+									"    }\r",
+									"    pm.expect(res).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test('Wrong password has a correct message', () => {\r",
+									"    pm.expect(data.message).to.eq(\"Passwords must have at least one non alphanumeric character, one digit ('0'-'9'), one uppercase ('A'-'Z'), one lowercase ('a'-'z'), one special character and Password must be eight characters or longer.\")\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"Jack{{$randomInt}}\",\r\n  \"password\": \"1\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urls_main}}/Account/v1/User",
+							"host": [
+								"{{urls_main}}"
+							],
+							"path": [
+								"Account",
+								"v1",
+								"User"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Existing credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();\r",
+									"\r",
+									"pm.test('Status code is 406', () => {\r",
+									"    pm.expect(pm.response.code).to.eq(406);\r",
+									"});\r",
+									"\r",
+									"pm.test('User exists', () => {\r",
+									"    pm.expect(data.message).to.eq(\"User exists!\")\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"/*var email = 'a4sd'+{$randomInt} + '3@gmail.com';\r",
+									"var name = {$randomUserName};\r",
+									"var password = {$randomPassword};\r",
+									"*/\r",
+									"\r",
+									"var userName = 'John' + pm.environment.replaceIn('{{$randomInt}}')\r",
+									"var password = '_-12QXw!'\r",
+									"const urls_main = pm.environment.get('urls_main')\r",
+									"\r",
+									"const postRequest = {\r",
+									"  url: urls_main + '/Account/v1/User',\r",
+									"  method: 'POST',\r",
+									"  header:['Content-Type: application/json'],\r",
+									"  body: {\r",
+									"    mode: 'raw',\r",
+									"    raw: JSON.stringify({\r",
+									"                        'userName':userName,\r",
+									"                        'password':password\r",
+									"                        })\r",
+									"        }\r",
+									"        };\r",
+									"pm.sendRequest(postRequest, (err, res) => {\r",
+									"    console.log(err ? err : res.json());\r",
+									"    pm.environment.set('userName', userName);\r",
+									"    pm.environment.set('password', password);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"           "
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"{{userName}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urls_main}}/Account/v1/User",
+							"host": [
+								"{{urls_main}}"
+							],
+							"path": [
+								"Account",
+								"v1",
+								"User"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Wrong endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();\r",
+									"\r",
+									"pm.test('Status code is 404', () => {\r",
+									"    pm.expect(pm.response.code).to.eq(404);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"Jack{{$randomInt}}\",\r\n  \"password\": \"_-12QXw!\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urls_main}}/Account/v1/User-wrong",
+							"host": [
+								"{{urls_main}}"
+							],
+							"path": [
+								"Account",
+								"v1",
+								"User-wrong"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create User Copy",
+			"item": [
+				{
+					"name": "Correct",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();\r",
+									"var req_params = JSON.parse(pm.request.body.raw)\r",
+									"var name = req_params.userName;\r",
+									"var password = req_params.password;\r",
+									"\r",
+									"pm.test('Status code is 201', () => {\r",
+									"    pm.expect(pm.response.code).to.eq(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('User ' + name + 'is created', () => {\r",
+									"    pm.expect(data).to.haveOwnProperty('username').to.eq(name)\r",
+									"});\r",
+									"\r",
+									"pm.test('Schema is valid', () => {\r",
+									"    const schema = {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"userID\": { \r",
+									"                \"type\": \"string\",\r",
+									"                \"pattern\": \"[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{4}-[0-9A-Za-z]{12}\" },\r",
+									"            \"username\": { \"type\": \"string\" },\r",
+									"            \"books\": \"Array\"\r",
+									"        },\r",
+									"        \"required\": [\"userID\", \"username\", \"books\"],\r",
+									"        \"additionalProperties\": false\r",
+									"    };\r",
+									"    \r",
+									"    // Variant for multiple errors\r",
+									"    //let res = tv4.validateMultiple(data, schema);\r",
+									"    // if (res == false){\r",
+									"    //console.log('Some problem is here: ' + res);\r",
+									"    //}\r",
+									"\r",
+									"    // Variant for single step errors\r",
+									"    let res = tv4.validate(data, schema);\r",
+									"    if (res == false){\r",
+									"        console.log('Some problem is here: ' + tv4.error.schemaPath);\r",
+									"    }\r",
+									"\r",
+									"    pm.expect(res).to.be.true;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"Jack{{$randomInt}}\",\r\n  \"password\": \"_-12QXw!\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urls_main}}/Account/v1/User",
+							"host": [
+								"{{urls_main}}"
+							],
+							"path": [
+								"Account",
+								"v1",
+								"User"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Wrong password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();\r",
+									"\r",
+									"pm.test('Schema is valid', () => {\r",
+									"    const schema = {\r",
+									"        \"type\": \"object\",\r",
+									"        \"properties\": {\r",
+									"            \"code\": { \"type\": \"number\" },\r",
+									"            \"message\": { \"type\": \"string\" }\r",
+									"        },\r",
+									"        \"required\": [\"code\", \"message\"],\r",
+									"        \"additionalProperties\": false\r",
+									"    };\r",
+									"\r",
+									"    // Variant for multiple errors\r",
+									"    //let res = tv4.validateMultiple(data, schema);\r",
+									"    // if (res == false){\r",
+									"    //console.log('Some problem is here: ' + res);\r",
+									"    //}\r",
+									"\r",
+									"    // Variant for single step errors\r",
+									"    let res = tv4.validate(data, schema);\r",
+									"    if (res == false){\r",
+									"        console.log('Some problem is here: ' + tv4.error.schemaPath);\r",
+									"    }\r",
+									"    pm.expect(x).to.be.true;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test('Wrong password has a correct message', () => {\r",
+									"    pm.expect(data.message).to.eq(\"Passwords must have at least one non alphanumeric character, one digit ('0'-'9'), one uppercase ('A'-'Z'), one lowercase ('a'-'z'), one special character and Password must be eight characters or longer.\")\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"Jack\",\r\n  \"password\": \"1\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{urls_main}}/Account/v1/User",
+							"host": [
+								"{{urls_main}}"
+							],
+							"path": [
+								"Account",
+								"v1",
+								"User"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
