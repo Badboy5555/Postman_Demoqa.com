@@ -17,7 +17,7 @@ For "Account" section were made:
 7. Clone the project `git clone https://github.com/Badboy5555/Postman_Demoqa.com.git`
 
 # Tests runnig
-For run all test:
+To run all test:
 - Newman run command: using CLI, navigate to project directory and run command: `newman run Demoqa.postman_collection.json -e Demoqa.postman_environment.json -r allure --reporter-allure-export allure-results`
 - automatic Jenkins pipeline: New Item -> Pipeline -> put content of Jenkins_cfg_demoqa.yml in csript-field -> Build
 
