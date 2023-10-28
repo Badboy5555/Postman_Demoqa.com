@@ -3,8 +3,8 @@
 This project implemets JS Postman API autotests for https://demoqa.com/swagger   
 A tech stack: Postman + JS + Jenkins + Newman + Allure 
 For "Account" section were made:  
-- Autotests — [ссылка](https://www.postman.com/badboy5555/workspace/pub/request/21209626-ac151384-eead-4c63-ba9c-359d351f7947)
-- Pipeline for neman + Jenkins — [ссылка](https://github.com/Badboy5555/Postman_Demoqa.com/blob/main/Jenkins_cfg_demoqa.yml)
+- Autotests — [link](https://www.postman.com/badboy5555/workspace/pub/request/21209626-ac151384-eead-4c63-ba9c-359d351f7947)
+- Pipeline for neman + Jenkins — [link](https://github.com/Badboy5555/Postman_Demoqa.com/blob/main/Jenkins_cfg_demoqa.yml)
 
 # Installation
 1. Install Postman [Postman home page tutorial](https://www.postman.com/downloads)
